@@ -508,6 +508,86 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Helper functions for Custom Success Popup
+  function showSuccessPopup(message) {
+    const popup = document.getElementById('success-popup');
+    const card = document.getElementById('success-popup-card');
+    const msgEl = document.getElementById('success-popup-message');
+    if (popup && card && msgEl) {
+      msgEl.textContent = message;
+      popup.classList.remove('hidden');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 50);
+    }
+  }
+
+  function closeSuccessPopup() {
+    const popup = document.getElementById('success-popup');
+    const card = document.getElementById('success-popup-card');
+    if (popup && card) {
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        popup.classList.add('hidden');
+      }, 300);
+    }
+  }
+
+  const popupClose = document.getElementById('success-popup-close');
+  if (popupClose) {
+    popupClose.addEventListener('click', closeSuccessPopup);
+  }
+
+  const popupModal = document.getElementById('success-popup');
+  if (popupModal) {
+    popupModal.addEventListener('click', (e) => {
+      if (e.target === popupModal) {
+        closeSuccessPopup();
+      }
+    });
+  }
+
+  // Helper functions for Choose Call Number Modal
+  const callModalTriggers = document.querySelectorAll('.open-call-modal');
+  const callModal = document.getElementById('call-modal');
+  const callModalCard = document.getElementById('call-modal-card');
+  const callModalClose = document.getElementById('call-modal-close');
+
+  if (callModalTriggers && callModal && callModalCard) {
+    const openCallModal = (e) => {
+      e.preventDefault();
+      callModal.classList.remove('hidden');
+      setTimeout(() => {
+        callModalCard.classList.remove('scale-95', 'opacity-0');
+        callModalCard.classList.add('scale-100', 'opacity-100');
+      }, 50);
+    };
+
+    const closeCallModal = () => {
+      callModalCard.classList.remove('scale-100', 'opacity-100');
+      callModalCard.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        callModal.classList.add('hidden');
+      }, 300);
+    };
+
+    callModalTriggers.forEach(trigger => {
+      trigger.addEventListener('click', openCallModal);
+    });
+
+    if (callModalClose) {
+      callModalClose.addEventListener('click', closeCallModal);
+    }
+
+    callModal.addEventListener('click', (e) => {
+      if (e.target === callModal) {
+        closeCallModal();
+      }
+    });
+  }
+
   // Handle Form Submission
   if (appointmentForm) {
     appointmentForm.addEventListener('submit', (e) => {
@@ -523,14 +603,39 @@ document.addEventListener('DOMContentLoaded', () => {
         </svg> Booking...
       `;
 
+      // Get input values
+      const name = document.getElementById('modal-name')?.value || '';
+      const phone = document.getElementById('modal-phone')?.value || '';
+      const service = document.getElementById('modal-service')?.value || '';
+      const date = document.getElementById('modal-date')?.value || '';
+      const time = document.getElementById('modal-time')?.value || '';
+      const notes = document.getElementById('modal-notes')?.value || '';
+
+      // Format WhatsApp Message
+      const messageText = `Fit Life Physiotherapy - New Appointment Request\n` +
+                          `------------------------------------------\n` +
+                          `Name: ${name}\n` +
+                          `Phone: ${phone}\n` +
+                          `Therapy: ${service}\n` +
+                          `Date: ${date}\n` +
+                          `Time Slot: ${time}\n` +
+                          `Brief Symptoms: ${notes}`;
+
       // Simulate API submit delay
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.innerHTML = origText;
+        
+        // Reset and close
         appointmentForm.reset();
         closeModal();
-        showToast("✓ Appointment Request Submitted! We will call you back shortly.");
-      }, 1500);
+
+        // Redirect to WhatsApp
+        window.open('https://wa.me/918758100991?text=' + encodeURIComponent(messageText), '_blank');
+        
+        // Show custom popup box
+        showSuccessPopup("Your appointment request has been submitted successfully! We are redirecting you to WhatsApp to complete your slot booking.");
+      }, 1200);
     });
   }
 
@@ -542,15 +647,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const title = btn.getAttribute('data-service');
-      const desc = btn.getAttribute('data-desc');
       
-      // We can open the appointment modal prefilled, and notify
       const selectService = document.getElementById('modal-service');
       if (selectService) {
         selectService.value = title;
       }
       openModal();
-      showToast(`Booking details for ${title}`);
     });
   });
 
@@ -572,12 +674,32 @@ document.addEventListener('DOMContentLoaded', () => {
         </svg> Sending...
       `;
 
+      // Get contact values
+      const cName = document.getElementById('name')?.value || '';
+      const cPhone = document.getElementById('phone')?.value || '';
+      const cEmail = document.getElementById('email')?.value || '';
+      const cMessage = document.getElementById('message')?.value || '';
+
+      // Format WhatsApp Message
+      const messageText = `Fit Life Physiotherapy - New Contact Message\n` +
+                          `------------------------------------------\n` +
+                          `Name: ${cName}\n` +
+                          `Phone: ${cPhone}\n` +
+                          `Email: ${cEmail}\n` +
+                          `Message: ${cMessage}`;
+
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.innerHTML = origText;
+        
         contactForm.reset();
-        showToast("✓ Message Sent Successfully! Thank you for contacting Fit Life.");
-      }, 1500);
+
+        // Redirect to WhatsApp
+        window.open('https://wa.me/918758100991?text=' + encodeURIComponent(messageText), '_blank');
+
+        // Show custom popup box
+        showSuccessPopup("Your message has been sent successfully! We are redirecting you to WhatsApp to connect with Dr. Miloni Shah.");
+      }, 1200);
     });
   }
 
