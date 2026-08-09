@@ -287,3 +287,18 @@ h1, h2, h3, h4, h5, h6 {
 .gallery-zoom:hover img {
   transform: scale(1.08);
 }
+
+/* Custom Input Dark Mode Override styling */
+.dark input, 
+.dark select, 
+.dark textarea {
+  background-color: #1F2937 !important; /* slate-800 */
+  color: #F3F4F6 !important; /* slate-100 */
+  border-color: #374151 !important; /* slate-700 */
+}
+
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #9CA3AF !important; /* slate-400 */
+  opacity: 0.8 !important;
+}
