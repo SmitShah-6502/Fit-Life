@@ -218,98 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(statsSection);
   }
 
+
   // ==========================================
-  // 7. Testimonials Carousel
+  // 7. Testimonials Marquee (CSS Scroll)
   // ==========================================
-  const track = document.querySelector('.carousel-track');
-  const slides = Array.from(document.querySelectorAll('.carousel-slide'));
-  const nextButton = document.getElementById('carousel-btn-next');
-  const prevButton = document.getElementById('carousel-btn-prev');
-  const dotNav = document.querySelector('.carousel-dots');
-  
-  if (track && slides.length > 0) {
-    let dots = [];
-    let activeIndex = 0;
-    let slideWidth = slides[0].getBoundingClientRect().width;
+  // Note: The slow infinite marquee is powered by CSS keyframes in style.css.
 
-    // Arrange slides side by side
-    const setSlidePosition = (slide, index) => {
-      slide.style.left = slideWidth * index + 'px';
-    };
-    slides.forEach(setSlidePosition);
-
-    window.addEventListener('resize', () => {
-      slideWidth = slides[0].getBoundingClientRect().width;
-      slides.forEach(setSlidePosition);
-      moveToSlide(track, slides[activeIndex]);
-    });
-
-    // Create dot pagination
-    slides.forEach((_, index) => {
-      const dot = document.createElement('button');
-      dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${index === 0 ? 'bg-teal-600 scale-125' : 'bg-slate-300 dark:bg-slate-700'}`;
-      dot.setAttribute('aria-label', `Go to testimonial ${index + 1}`);
-      dotNav.appendChild(dot);
-      dots.push(dot);
-
-      dot.addEventListener('click', () => {
-        moveToSlide(track, slides[index]);
-        updateDots(index);
-        activeIndex = index;
-      });
-    });
-
-    const moveToSlide = (track, targetSlide) => {
-      track.style.transform = 'translateX(-' + targetSlide.style.left + ')';
-    };
-
-    const updateDots = (targetIndex) => {
-      dots.forEach((dot, index) => {
-        if (index === targetIndex) {
-          dot.classList.add('bg-teal-600', 'scale-125');
-          dot.classList.remove('bg-slate-300', 'dark:bg-slate-700');
-        } else {
-          dot.classList.remove('bg-teal-600', 'scale-125');
-          dot.classList.add('bg-slate-300', 'dark:bg-slate-700');
-        }
-      });
-    };
-
-    const slideNext = () => {
-      let nextIndex = activeIndex + 1;
-      if (nextIndex >= slides.length) {
-        nextIndex = 0;
-      }
-      moveToSlide(track, slides[nextIndex]);
-      updateDots(nextIndex);
-      activeIndex = nextIndex;
-    };
-
-    const slidePrev = () => {
-      let prevIndex = activeIndex - 1;
-      if (prevIndex < 0) {
-        prevIndex = slides.length - 1;
-      }
-      moveToSlide(track, slides[prevIndex]);
-      updateDots(prevIndex);
-      activeIndex = prevIndex;
-    };
-
-    if (nextButton) nextButton.addEventListener('click', slideNext);
-    if (prevButton) prevButton.addEventListener('click', slidePrev);
-
-    // Auto play
-    let carouselInterval = setInterval(slideNext, 5000);
-
-    const resetInterval = () => {
-      clearInterval(carouselInterval);
-      carouselInterval = setInterval(slideNext, 5000);
-    };
-
-    if (nextButton) nextButton.addEventListener('click', resetInterval);
-    if (prevButton) prevButton.addEventListener('click', resetInterval);
-    dots.forEach(dot => dot.addEventListener('click', resetInterval));
-  }
 
   // ==========================================
   // 8. Gallery Masonry Lightbox
